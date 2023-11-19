@@ -178,6 +178,30 @@ isodata(I: Imagen, iteracionesMáximas: número): Imagen
 
 9. Binarización adaptativa 
 
+binarizacionAdaptativa(I: imagen, t: Ventana, c: número)
+    IB <- crearImagen(numFilas(I), numColumnas(I))
+
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    para i <- 1 hasta n:
+        para j <- 1 hasta m:
+            x1 <- max(j - tamanoVentana(t) / 2, 1)
+            y1 <- max(i - tamanoVentana(t) / 2, 1)
+            x2 <- min(j + tamanoVentana(t) / 2, numColumnas(I) - 1)
+            y2 <- min(i + tamanoVentana(t) / 2, numFilas(I) - 1)
+
+            ventanaLocal <- extraerVentana(I, x1, y1, x2, y2)
+
+            umbralLocal <- media(ventanaLocal) - c
+
+            si I[i, j] > umbralLocal:
+                IB[i, j] <- 255
+            si no:
+                IB[i, j] <- 0
+                
+    retornar(IB)
+
 10. Correlación
 
 11. Convolución
