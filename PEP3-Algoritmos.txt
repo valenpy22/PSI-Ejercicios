@@ -134,8 +134,47 @@ otsu(I: Imagen): Imagen
 
 8. ISODATA
 
-isodata(I: Imagen, umbral: número): Imagen
+isodata(I: Imagen, iteracionesMáximas: número): Imagen
+    umbral <- mediaIntensidades(I)
+    cambio <- True
+    iteraciones <- 0
 
+    clusterFondo <- crearArregloVacío(0)
+    clusterObjeto <- crearArregloVacío(0)
+
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    mientras cambio e iteraciones < iteracionesMáximas:
+        cambio = False
+        iteraciones++
+
+        para i <- 1 hasta n:
+            para j <- 1 hasta m:
+                si I[i, j] < umbral:
+                    clusterFondo.push(I[i, j])
+                si no:
+                    clusterObjeto.push(I[i, j])
+
+        mediaFondo <- mediaIntensidades(clusterFondo)
+        mediaObjeto <- mediaIntensidades(clusterObjeto)
+
+        nuevoUmbral <- (mediaFondo + mediaObjeto) / 2
+
+        si abs(nuevoUmbral - umbral) > 0:
+            cambio = True
+            umbral = nuevoUmbral
+        si no:
+            iteraciones <- iteracionesMáximas
+
+    para i <- 1 hasta n:
+        para j <- 1 hasta m:
+            si I[i, j] < umbral:
+                I[i, j] <- 0
+            si no:
+                I[i, j] <- 255
+
+    retornar(I)
 
 9. Binarización adaptativa 
 
