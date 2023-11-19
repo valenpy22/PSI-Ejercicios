@@ -1,0 +1,73 @@
+1. Histograma
+
+histograma(I: Imagen): arreglo
+    n <- numFilas(I)
+    m <- numColumnas(I)
+    h <- crearArregloVacío(256)
+
+    para i <- 1 hasta n:
+        para j <- 1 hasta m:
+            color <- I[i, j]
+            h[color + 1] <- h[color + 1] + 1
+
+    devolver(h)
+
+2. Histograma normalizado
+
+histogramaNormalizado(I: Imagen): arreglo
+    n <- numFilas(I)
+    m <- numColumnas(I)
+    h <- histograma(I)
+
+    total <- n*m
+
+    para i <- 1 hasta total:
+        h[i] <- h[i]/total
+    
+    devolver(h)
+
+3. Histograma acumulado
+
+histogramaAcumulado(I: Imagen): arreglo
+    h <- histograma(I)
+
+    hA <- crearArregloVacío(256)
+
+    hA[1] <- 0
+
+    para i <- 2 hasta largo(h):
+        hA[i] <- hA[i - 1] + h[i-1]
+
+    devolver(hA)
+
+4. Negativo
+
+negativo(I: Imagen): arreglo
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    para i <- 1 hasta n:
+        para j <- hasta m:
+            I[i, j] <- 255 - I[i, j]
+
+    devolver(I)
+
+5. Blending
+
+blending(I1: Imagen, I2: Imagen, a: flotante): Imagen
+    si(numFilas(I1) != numFilas(I2) o numColumnas(I1) != numColumnas(I2)):
+        no se puede hacer blending
+    
+    I <- nuevaImagen(numFilas(I1), numColumnas(I2))
+
+    n <- numFilas(I1)
+    m <- numColumnas(I1)
+
+    para i <- 1 hasta n:
+        para j <- 1 hasta m:
+            colorA <- I1[i, j] * a
+            colorB <- I2[i, j] * (1 - a)
+            I[i, j] <- colorA + colorB
+
+    devolver(I)
+
