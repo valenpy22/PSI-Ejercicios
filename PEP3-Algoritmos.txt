@@ -71,3 +71,131 @@ blending(I1: Imagen, I2: Imagen, a: flotante): Imagen
 
     devolver(I)
 
+6. Histograma normalizado acumulado
+
+histogramaNormalizadoAcumulado(I: Imagen): arreglo
+    n <- numFilas(I)
+    m <- numColumnas(I)
+    total <- n*m
+
+    hA <- histogramaAcumulado(I)
+
+    para i <- 1 hasta largo(hA):
+        hA[i] <- hA[i]/total
+    
+    devolver(hA)
+
+7. Algoritmo de Otsu
+
+umbralOtsu(I: Imagen): número
+    hNA <- histogramaNormalizadoAcumulado(I)
+    hN <- histogramaNormalizado(I)
+    hA <- histogramaAcumulado(I)
+    h <- histograma(I)
+
+    sumaFondo <- 0
+    pesoFondo <- 0
+    varianzaMaxima <- 0
+    umbral <- 0
+
+    para i <- 1 hasta largo(hN):
+        pesoFrente <- 1 - hNA[i]
+
+        si h[i] == 0 o pesoFrente == 0:
+            continuar
+        
+        sumaFondo <- i * hN[i]
+
+        mediaFondo = sumaFondo / pesoFondo
+        mediaFrente = (sumaTotal - sumaFondo) / pesoFrente
+
+        varianzaEntre = pesoFondo * pesoFrente * (mediaFondo - mediaFrente) * (mediaFondo - mediaFrente)
+
+        si varianzaEntre > varianzaMaxima:
+            varianzaMaxima = varianzaEntre
+            umbral = i
+
+        devolver(umbral)
+
+otsu(I: Imagen): Imagen
+    umbral <- umbralOtsu(I)
+    
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    para i <- 1 hasta n:
+        para j <- 1 hasta m:
+            si I[i, j] < umbral:
+                I[i, j] <- 0
+            si no:
+                I[i, j] <- 255
+    
+    devolver(I)
+
+8. ISODATA
+
+isodata(I: Imagen, umbral: número): Imagen
+
+
+9. Binarización adaptativa 
+
+10. Correlación
+
+11. Convolución
+(Incluir casos donde se agrega un valor constante en los bordes,
+se replica la columna/fila más próxima, reflexión o un wrap)
+
+
+12. Filtro promedio
+
+13. Filtro promedio ponderado
+
+14. Filtro gaussiano
+
+15. Filtro promedio de rango
+
+16. Filtro mediana
+
+17. Difusión anisotrópica
+
+18. Detección de bordes
+
+19. Operador de Prewitt
+
+20. Operador de Sobel
+
+21. Método de Canny
+
+22. Operador Laplaciano
+
+23. Laplaciano de gaussiano
+
+24. Aplicación del zero-crossing
+
+25. Operadores de Kirsch (direccionales)
+
+26. Dilatación binaria
+
+27. Erosión binaria
+
+28. Apertura binaria
+
+29. Clausura binaria
+
+30. Dilatación
+
+31. Erosión
+
+32. Conectividad de componentes
+
+33. Número de componentes
+
+34. Corrección gamma
+
+35. Escalamiento lineal
+
+36. Ecualización de histograma
+
+37. Adaptative Histogram Equalization AHE
+
+38. Ecualización del histograma por LEVEL-SETs
