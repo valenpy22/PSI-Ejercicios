@@ -199,23 +199,119 @@ binarizacionAdaptativa(I: imagen, t: Ventana, c: número)
                 IB[i, j] <- 255
             si no:
                 IB[i, j] <- 0
-                
+
     retornar(IB)
 
 10. Correlación
+
+
 
 11. Convolución
 (Incluir casos donde se agrega un valor constante en los bordes,
 se replica la columna/fila más próxima, reflexión o un wrap)
 
+convolucion(I: Imagen, M: Máscara): Imagen
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    a <- numFilas(M)
+    b <- numColumnas(M)
+
+    margenAltura <- a / 2
+    margenAnchura <- b / 2
+
+    IS <- nuevaImagen(n, m)
+
+    // Se realiza la Convolución
+    para i <- 1 hasta n - margenAltura:
+        para j <- 1 hasta m - margenAnchura:
+            suma <- 0
+
+            para c <- 1 hasta a: 
+                para d <- 1 hasta b:
+                    si i - margenAltura <= 0 o j - margenAltura <= 0:
+                        suma <- suma + M[c, d]
+                    sino:
+                        suma <- suma + M[c, d] * I[i - margenAltura, j - margenAnchura]
+
+
+            IS[i, j] <- suma
+
+    retornar(IS)
 
 12. Filtro promedio
 
+filtroPromedio(I: Imagen, M: Máscara): Imagen
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    a <- numFilas(M)
+    b <- numColumnas(M)
+
+    margenAltura <- a / 2
+    margenAnchura <- b / 2
+
+    IS <- nuevaImagen(n, m)
+
+    para i <- 1 hasta n - margenAltura:
+        para j <- 1 hasta m - margenAnchura:
+            suma <- 0
+
+            para c <- 1 hasta a: 
+                para d <- 1 hasta b:
+                    si i - margenAltura <= 0 o j - margenAltura <= 0:
+                        suma <- suma + M[c, d]
+                    sino:
+                        suma <- suma + M[c, d] * I[i - margenAltura, j - margenAnchura]
+
+
+            IS[i, j] <- suma / (a * b)
+
+    retornar(IS)
+
 13. Filtro promedio ponderado
 
-14. Filtro gaussiano
+filtroPromedioPonderado(I: Imagen, M: Máscara): Imagen
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    a <- numFilas(M)
+    b <- numColumnas(M)
+
+    margenAltura <- a / 2
+    margenAnchura <- b / 2
+
+    IS <- nuevaImagen(n, m)
+
+    para i <- 1 hasta n - margenAltura:
+        para j <- 1 hasta m - margenAnchura:
+            suma <- 0
+            valorTotal <- 0
+
+            para c <- 1 hasta a:
+                para d <- 1 hasta b:
+                    valorTotal <- valorTotal + M[c, d]
+
+            para c <- 1 hasta a: 
+                para d <- 1 hasta b:
+                    si i - margenAltura <= 0 o j - margenAltura <= 0:
+                        suma <- suma + M[c, d]
+
+                    sino:
+                        suma <- suma + M[c, d] * I[i - margenAltura, j - margenAnchura] / valorTotal
+
+            IS[i, j] <- suma
+
+    retornar(IS)
+
+14. Filtro gaussiano 
+// Lo mismo que ponderado, solo que se le agrega peso a los pixeles
+// del centro.
 
 15. Filtro promedio de rango
+//Se promedian los valores mínimo y máximo dentro del rango dado
+//dentro de la máscara.
+
 
 16. Filtro mediana
 
