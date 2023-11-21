@@ -392,8 +392,10 @@ cambiar según el tipo de máscara.
 
 21. Método de Canny
 
-metodoCanny(I: Imagen)
-    
+metodoCanny(I: Imagen): Imagen
+    I <- filtroGaussiano(I)
+
+
 
 22. Operador Laplaciano
 
@@ -404,6 +406,22 @@ metodoCanny(I: Imagen)
 25. Operadores de Kirsch (direccionales)
 
 26. Dilatación binaria
+
+dilatacionBinaria(I: Imagen, E: Elemento estructural): Imagen
+
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    para i <- 1 hasta numFilas(I):
+        para j <- 1 hasta numColumnas(I):
+            
+            si centro(E) == I[i, j] y centro(E) == 0:
+                para a <- 1 hasta numFilas(E):
+                    para b <- 1 hasta numColumnas(E):
+                        si I[i, j] != E[a, b] y E[a, b] == 0:
+                            G[i + a, j + b] = 0
+
+    devolver(G)
+                
 
 27. Erosión binaria
 
