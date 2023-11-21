@@ -317,13 +317,83 @@ filtroPromedioPonderado(I: Imagen, M: Máscara): Imagen
 
 17. Difusión anisotrópica
 
-18. Detección de bordes
+18. Operador de Roberts
+
+operadorRoberts(I: Imagen): Imagen
+
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    para i <- 1 hasta numFilas(I):
+        para j <- 1 hasta numColumnas(I):
+            ... asumiendo padding
+            gx <- I[i, j] - I[i + 1, j + 1]
+            gy <- I[i, j + 1] - I[i + 1, j]
+            G[i, j] <- abs(gx) + abs(gy)
+    
+    devolver(G)
 
 19. Operador de Prewitt
 
+operadorPrewitt(I: Imagen): Imagen
+
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    para i <- 1 hasta numFilas(I):
+        para j <- 1 hasta numColumnas(I):
+            ... asumiendo padding
+            gx <- - I[i - 1, j - 1] -  I[i, j - 1] -  I[i + 1, j - 1]
+                + I[i - 1, j + 1] + I[i, j + 1] + I[i + 1, j + 1]
+
+            gy <- - I[i - 1, j - 1] - I[i - 1, j] - I[i - 1, j + 1]
+                + I[i + 1, j - 1] + I[i + 1, j] + I[i + 1, j + 1] 
+
+            G[i, j] <- abs(gx) + abs(gy)
+
+    devolver(G)
+
 20. Operador de Sobel
 
+operadorSobel(I: Imagen): Imagen
+
+    /* 
+    
+    Asumiendo:
+
+    Gx = [
+           -1  -2  -1
+            0   0   0
+            1   2   1 
+                        ]
+
+    Gy = [
+           -1   0   1
+           -2   0   2
+           -1   0   1
+                        ]
+    */
+
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    para i <- 1 hasta numFilas(I):
+        para j <- 1 hasta numColumnas(I):
+            ... asumiendo padding
+            gx <- - I[i - 1, j - 1] - 2 * I[i, j - 1] - I[i + 1, j - 1]
+                + I[i - 1, j + 1] + 2 * I[i, j + 1] + I[i + 1, j + 1]
+
+            gy <- - I[i - 1, j - 1] - 2 * I[i - 1, j] - I[i - 1, j + 1]
+                + I[i + 1, j - 1] + 2 * I[i + 1, j] + I[i + 1, j + 1] 
+
+            G[i, j] <- abs(gx) + abs(gy)
+
+    devolver(G)
+
+PD: Recordar que los coeficientes que multiplican a la imagen pueden
+cambiar según el tipo de máscara. 
+
 21. Método de Canny
+
+metodoCanny(I: Imagen)
+    
 
 22. Operador Laplaciano
 
