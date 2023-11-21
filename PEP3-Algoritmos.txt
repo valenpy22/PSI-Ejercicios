@@ -425,13 +425,49 @@ dilatacionBinaria(I: Imagen, E: Elemento estructural): Imagen
 
 27. Erosión binaria
 
+erosionBinaria(I: Imagen, E: Elemento estructural): Imagen
+
+    G <- crearImagen(numFilas(I, numColumnas(I)))
+
+    para i <- 1 hasta numFilas(I):
+        para j <- 1 hasta numColumnas(I):
+
+            n <- contarPixelesNegros(E)
+
+            para a <- 1 hasta numFilas(E):
+                para b <- 1 hasta numColumnas(E):
+                    si I[i, j] == E[a, b] y E[a, b] == 0:
+                        contador = contador + 1;
+
+            si contador == n:
+                G[i, j] = 0
+
+    devolver(G)
+
+
+
 28. Apertura binaria
+
+aperturaBinaria(I: Imagen, E: Elemento estructural): Imagen
+    I <- erosionBinaria(I, E)
+    I <- dilatacionBinaria(I, E)
+    devolver(I)
 
 29. Clausura binaria
 
+clausuraBinaria(I: Imagen: E: Elemento estructural): Imagen
+    I <- dilatacionBinaria(I, E)
+    I <- erosionBinaria(I, E)
+    devolver(I)
+
 30. Dilatación
 
+dilatacion(I: Imagen, E: Elemento estructural): Imagen
+
 31. Erosión
+
+erosion(I: Imagen: E: Elemento estructural): Imagen
+
 
 32. Conectividad de componentes
 
