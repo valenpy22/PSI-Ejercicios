@@ -315,6 +315,19 @@ filtroPromedioPonderado(I: Imagen, M: Máscara): Imagen
 
 16. Filtro mediana
 
+filtroMediana(I: Imagen, M: Máscara): Imagen
+
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    para i <- 1 hasta numFilas(I):
+        para j <- 1 hasta numColumnas(I):
+            ... asumiendo padding
+            ordenados <- pixelOrdenados(I[i, j], M)
+            mediana <- obtenerMediana(ordenados)
+            G[i, j] <- mediana
+
+    devolver(G)
+
 17. Difusión anisotrópica
 
 18. Operador de Roberts
