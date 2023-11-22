@@ -15,13 +15,10 @@ histograma(I: Imagen): arreglo
 2. Histograma normalizado
 
 histogramaNormalizado(I: Imagen): arreglo
-    n <- numFilas(I)
-    m <- numColumnas(I)
+
     h <- histograma(I)
 
-    total <- n*m
-
-    para i <- 1 hasta total:
+    para i <- 1 hasta largo(h):
         h[i] <- h[i]/total
     
     devolver(h)
@@ -372,13 +369,13 @@ operadorSobel(I: Imagen): Imagen
     
     Asumiendo:
 
-    Gx = [
+    Gy = [
            -1  -2  -1
             0   0   0
             1   2   1 
                         ]
 
-    Gy = [
+    Gx = [
            -1   0   1
            -2   0   2
            -1   0   1
@@ -403,10 +400,40 @@ operadorSobel(I: Imagen): Imagen
 PD: Recordar que los coeficientes que multiplican a la imagen pueden
 cambiar según el tipo de máscara. 
 
-21. Método de Canny
+21. Método de Canny: me dio flojera lo siento KFJSKFJKDJF
 
-metodoCanny(I: Imagen): Imagen
+metodoCanny(I: Imagen, M: Máscara): Imagen
     I <- filtroGaussiano(I)
+
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    hA <- histogramaAcumulado(I)
+    
+    umbralHigh = 0.8*hA
+    umbralLow = 0.4*umbralHigh
+
+    por cada pixel de I:
+        ... asumiendo padding
+        /* 
+    
+        Asumiendo:
+
+        Gy = [
+               -1  -1  -1
+                0   0   0
+                1   1   1 
+                            ]
+
+        Gx = [
+            -1   0   1
+            -1   0   1
+            -1   0   1
+                            ]
+        */   
+
+        por cada pixel de I:
+            G(x, y) <- (multiplicando I por los valores de la máscara)
+
 
 
 
@@ -476,22 +503,98 @@ clausuraBinaria(I: Imagen: E: Elemento estructural): Imagen
 30. Dilatación
 
 dilatacion(I: Imagen, E: Elemento estructural): Imagen
+    G <- crearNuevaImagen(numFilas(I), numColumnas(I))
+
+    por cada pixel de I:
+        según la vecindad dada por elemento estructural de pixel(x, y):
+            encontrar color max
+            G(x, y) <- color max
+
+    retornar G
 
 31. Erosión
 
 erosion(I: Imagen: E: Elemento estructural): Imagen
+    G <- crearNuevaImagen(numFilas(I), numColumnas(I))
 
+    por cada pixel de I:
+        según la vecindad dada por elemento estructural de pixel(x, y):
+            encontrar color min
+            G(x, y) <- color min
+
+    retornar G
 
 32. Conectividad de componentes
+conectividadDeComponentes(I: Imagen): Imagen
+
+    n <- numFilas(I)
+    m <- numColumnas(I)
+
+    etiquetaActual <- 0
+    
+    etiquetas <- crearImagenNegra(n, m)
+
+    para i <- 1 hasta n:
+        para j <- 1 hasta m:
+            si I[i, j] == 0 y etiquetas[i, j] == 0:
+                etiquetaActual++
+                aplicarBFS(I, etiquetas, i, j, etiquetaActual)
+
+    retornar(etiquetas)
+
+aplicarBFS(I: Imagen, etiquetas: Imagen, i: número_fila, j: número_columna, etiquetaActual: número): vacío
+    pila <- crearPila(0)
+
+    pila.agregar(I[i, j])
+
+    mientras pila != vacía:
+        si posicionValida(i, j) y I[i, j] == 0 y etiquetas[i, j] == 0:
+            etiquetas[i, j] <- etiquetaActual
+            pila.agregar(I[i + 1, j])
+            pila.agregar(I[i - 1, j])
+            pila.agregar(I[i, j - 1])
+            pila.agregar(I[i, j + 1])
 
 33. Número de componentes
+calcularNumeroDeComponentes(etiquetas: Imagen): número
+    max <- -10000
+    para i <- 1 hasta numFilas(etiquetas):
+        para j <- 1 hasta numColumnas(etiquetas):
+            si etiquetas[i, j] > max:
+                max <- etiquetas[i, j]
+    retornar(max)
 
-34. Corrección gamma
+34. Ancho y alto de componentes conexos
+encontrarAnchoYAltoComponentesConexos(I: Imagen): arreglo
+    a <- crearArregloVacío(0)
+    por cada componente_conexo en conectividadDeComponentes(I):
+        ancho <- max_x(componente_conexo) - min_x(componente_conexo) + 1
+        alto <- max_y(componente_conexo) - min_y(componente_conexo) + 1
+        a.agregar([componente_conexo, ancho, alto])
 
-35. Escalamiento lineal
+    retornar(a) 
 
-36. Ecualización de histograma
+35. Bounding boxes
 
-37. Adaptative Histogram Equalization AHE
+boundingBoxes(I: Imagen): Imagen
+    a <- encontrarAnchoYAltoComponentesConexos(I)
+    por cada componente_conexo en conectividadDeComponentes(I):
+        dibujarBoundingBox(a.encontrarComponente(componente_conexo))
+    retonar(I)
 
-38. Ecualización del histograma por LEVEL-SETs
+36. Corrección gamma
+correccionGamma(I: Imagen, Gamma: número, c: número): Imagen
+    G <- crearImagen(numFilas(I), numColumnas(I))
+
+    por cada pixel de I:
+        G(x, y) <- c * I(x, y) ^ Gamma
+
+    retornar(G)
+
+37. Escalamiento lineal
+
+38. Ecualización de histograma
+
+39. Adaptative Histogram Equalization AHE
+
+40. Ecualización del histograma por LEVEL-SETs
