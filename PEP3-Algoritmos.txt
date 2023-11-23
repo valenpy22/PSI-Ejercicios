@@ -445,6 +445,38 @@ metodoCanny(I: Imagen, M: Máscara): Imagen
 
 25. Operadores de Kirsch (direccionales)
 
+operadorKirsch(I: Imagen): Imagen
+
+    K0 <- [
+           -1  -1  -1,
+            0   0   0,
+            1   1   1
+        ]
+    K90 <- [
+            1   0  -1,
+            1   0  -1,
+            1   0  -1
+        ]
+    K45 <- [
+            -1  -1  0,
+            -1   0  1,
+             0   1  1
+        ]
+    K135 <- [
+            0  -1  -1,
+            1   0  -1,
+            1   1   0
+        ]
+
+    G0 <- conv(I, K0)
+    G90 <- conv(I, K90)
+    G45 <- conv(I, K45)
+    G135 <- conv(I, K135)
+
+    retornar G0 + G90 + G45 + G135
+
+// conv retorna la convolución entre 2 matrices, aplica padding apropiadamente
+
 26. Dilatación binaria
 
 dilatacionBinaria(I: Imagen, E: Elemento estructural): Imagen
@@ -592,6 +624,23 @@ correccionGamma(I: Imagen, Gamma: número, c: número): Imagen
     retornar(G)
 
 37. Escalamiento lineal
+
+encontrarMinimo(H: Histograma): Entero
+    para i <- 1 hasta largo(H):
+        si H[i] != 0
+            devolver H[i]
+            
+encontrarMaximo(H: Histograma): Entero
+    para i <- 1 hasta largo(H):
+        si H[256 - i] != 0
+            devolver H[256 - i]
+            
+escalamientoLineal(I: imagen): Imagen
+    H <- histograma(I)
+    a <- encontrarMinimo(H)
+    b <- encontrarMaximo(H)
+    G <- (255 - 1) * (I - a)/(b - a)
+    devolver G
 
 38. Ecualización de histograma
 
